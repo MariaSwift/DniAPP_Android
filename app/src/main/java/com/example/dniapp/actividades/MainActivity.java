@@ -78,10 +78,27 @@ public class MainActivity extends AppCompatActivity {
         int num_dni = Integer.parseInt(sdni);
         //2.1 Creo el objeto DNI nuevo
         Dni dni = crearObjetoDni(num_dni);
-        //calcular letra
+        //3 calcular letra
         char letra_dni = dni.calculaLetra();
         Log.d(TAG_APP, "Letra calculada = "+letra_dni);
-        //4 Lanzo la actividad del resultado pasándole la letra
+
+        dni.setLetra(letra_dni);
+
+        //4 Serializo objeto DNI a string con formato JSON utilizando la libreria GSON
+        Gson gson =new Gson();
+        String str_dni_json = gson.toJson(dni);
+        Log.d(TAG_APP, "JSON del DNI: " + str_dni_json);
+
+        //5 escribir strig JSON en fichero SharedPreferences
+        int contadorDNI = Preferencias.obtenerContadorDNIJSON(this);
+        contadorDNI = contadorDNI + 1;
+        Preferencias.guardarContadorDNIJSON( this, contadorDNI);
+        Log.d(TAG_APP, "SE GUARDA CONTADOR DE DNIS: " + contadorDNI);
+
+        Preferencias.guardarDNIJSON(this, String.valueOf(contadorDNI), str_dni_json);
+        Log.d(TAG_APP, "SE GUARDA CLAVE: " + contadorDNI + " VALOR: " + str_dni_json);
+
+        //6 Lanzo la actividad del resultado pasándole la letra
         Intent intent = new Intent(this, AnimacionLetraActivity.class);
         intent.putExtra("LETRA", letra_dni);
         startActivity(intent);
